@@ -241,6 +241,12 @@ Animator:
     type: 3}
   m_PrefabInstance: {fileID: 576403280099073117}
   m_PrefabAsset: {fileID: 0}
+--- !u!212 &1430127591 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 4773677821727335064, guid: df54a6418cbc23e48af35007362b1ec7,
+    type: 3}
+  m_PrefabInstance: {fileID: 576403280099073117}
+  m_PrefabAsset: {fileID: 0}
 --- !u!61 &1430127593
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -254,7 +260,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.0014979243, y: 0.9594778}
+  m_Offset: {x: 0, y: 1}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.42, y: 0.1}
@@ -265,7 +271,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.49289173, y: 1.993803}
+  m_Size: {x: 0.5, y: 2}
   m_EdgeRadius: 0
 --- !u!114 &1430127594
 MonoBehaviour:
@@ -280,6 +286,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 1430127590}
+  spriteRenderer: {fileID: 1430127591}
+  boxCollider2D: {fileID: 1430127593}
 --- !u!1 &1828750515
 GameObject:
   m_ObjectHideFlags: 0

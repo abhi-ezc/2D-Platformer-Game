@@ -6,6 +6,9 @@ public class PlayerController : MonoBehaviour
     public Animator animator;
     public SpriteRenderer spriteRenderer;
     public BoxCollider2D boxCollider2D;
+    public float speed;
+    public float jumpForce;
+    public Rigidbody2D rigidbody2D;
      
     // Animator Parameter Keys
     private static readonly int VelocityAnimatorKey = Animator.StringToHash("Velocity");
@@ -25,20 +28,29 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        UpdateVelocity();
-        CheckIfCrouching();
+        MoveCharacter();
+        CheckCanCrouch();
         CheckIfJumping();
     }
 
-    private void UpdateVelocity()
+    private void MoveCharacter()
     {
-        float speed = Input.GetAxis("Horizontal");
-        animator.SetFloat(VelocityAnimatorKey, Mathf.Abs(speed));
-        if (speed < 0)
+        float horizontal = Input.GetAxis("Horizontal");
+        Vector3 pos = transform.position;
+        pos.x += horizontal * Time.deltaTime * speed;
+        transform.position = pos;
+        
+        PlayHorizontalMovementAnimation(horizontal);
+    }
+
+    private void PlayHorizontalMovementAnimation(float horizontal)
+    {
+        animator.SetFloat(VelocityAnimatorKey, Mathf.Abs(horizontal));
+        if (horizontal < 0)
         {
             spriteRenderer.flipX = true;
         }
-        else if (speed > 0)
+        else if (horizontal > 0)
         {
             spriteRenderer.flipX = false;
         }
@@ -50,12 +62,13 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void CheckIfCrouching()
+    private void CheckCanCrouch()
     {
-        bool isCrouching = !animator.GetBool(IsCrouchingAnimatorKey);
+        bool canCrouch = !animator.GetBool(IsCrouchingAnimatorKey);
+
         if (Input.GetKeyDown(KeyCode.LeftControl))
         {
-            if (isCrouching)
+            if (canCrouch)
             {
                 boxCollider2D.offset = CrouchedHeightColliderMetrics.position;
                 boxCollider2D.size = CrouchedHeightColliderMetrics.size;
@@ -65,7 +78,7 @@ public class PlayerController : MonoBehaviour
                 boxCollider2D.offset = FullHeightColliderMetrics.position;
                 boxCollider2D.size = FullHeightColliderMetrics.size;
             }
-            animator.SetBool(IsCrouchingAnimatorKey,isCrouching);
+            animator.SetBool(IsCrouchingAnimatorKey, canCrouch);
         }
     }
 
@@ -75,6 +88,8 @@ public class PlayerController : MonoBehaviour
         if (vertical > 0)
         {
             animator.SetBool(IsCrouchingAnimatorKey, false);
+            Vector2 force = new Vector2(0, jumpForce );
+            rigidbody2D.AddForce(force);
             animator.SetTrigger(JumpAnimatorKey);
         }
         else

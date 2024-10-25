@@ -1,68 +1,57 @@
-
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    // Animator Parameter Keys
+    static readonly int VelocityAnimatorKey = Animator.StringToHash("Velocity");
+    static readonly int IsCrouchingAnimatorKey = Animator.StringToHash("IsCrouching");
+    static readonly int JumpAnimatorKey = Animator.StringToHash("Jump");
+
+    // Instance Assignments
     public Animator animator;
     public SpriteRenderer spriteRenderer;
     public BoxCollider2D boxCollider2D;
+    public Rigidbody2D rigidbody2D;
+    public ScoreController scoreController;
     public float speed;
     public float jumpForce;
-    public Rigidbody2D rigidbody2D;
-     
-    // Animator Parameter Keys
-    private static readonly int VelocityAnimatorKey = Animator.StringToHash("Velocity");
-    private static readonly int IsCrouchingAnimatorKey = Animator.StringToHash("IsCrouching");
-    private static readonly int JumpAnimatorKey = Animator.StringToHash("Jump");
-    
+    readonly Rect _crouchedHeightColliderMetrics = new Rect(new Vector2(-0.13f, 0.6f), new Vector2(0.9f, 1.31f));
+
     // Box Collider Sizes and Offset
-    private readonly Rect FullHeightColliderMetrics = new Rect(new Vector2(0f, 1f), new Vector2(0.5f, 2f));
-    private readonly Rect CrouchedHeightColliderMetrics = new Rect(new Vector2(-0.13f, 0.6f),new Vector2(0.9f,1.31f));
-    
-    // Start is called before the first frame update
-    void Start()
+    readonly Rect _fullHeightColliderMetrics = new Rect(new Vector2(0f, 1f), new Vector2(0.5f, 2f));
+
+    void Awake ()
     {
-        
+        rigidbody2D = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
-    void Update()
+    void Update ()
     {
         MoveCharacter();
         CheckCanCrouch();
         CheckIfJumping();
     }
 
-    private void MoveCharacter()
+    void MoveCharacter ()
     {
         float horizontal = Input.GetAxis("Horizontal");
         Vector3 pos = transform.position;
         pos.x += horizontal * Time.deltaTime * speed;
         transform.position = pos;
-        
+
         PlayHorizontalMovementAnimation(horizontal);
     }
 
-    private void PlayHorizontalMovementAnimation(float horizontal)
+    void PlayHorizontalMovementAnimation (float horizontal)
     {
         animator.SetFloat(VelocityAnimatorKey, Mathf.Abs(horizontal));
         if (horizontal < 0)
-        {
             spriteRenderer.flipX = true;
-        }
-        else if (horizontal > 0)
-        {
-            spriteRenderer.flipX = false;
-        }
-        else
-        {
-            // do nothing
-            // it will preserve the last flipx
-            // if no movement the player sprite will look at the last direction
-        }
+        else if (horizontal > 0) spriteRenderer.flipX = false;
     }
 
-    private void CheckCanCrouch()
+    void CheckCanCrouch ()
     {
         bool canCrouch = !animator.GetBool(IsCrouchingAnimatorKey);
 
@@ -70,25 +59,26 @@ public class PlayerController : MonoBehaviour
         {
             if (canCrouch)
             {
-                boxCollider2D.offset = CrouchedHeightColliderMetrics.position;
-                boxCollider2D.size = CrouchedHeightColliderMetrics.size;
+                boxCollider2D.offset = _crouchedHeightColliderMetrics.position;
+                boxCollider2D.size = _crouchedHeightColliderMetrics.size;
             }
             else
             {
-                boxCollider2D.offset = FullHeightColliderMetrics.position;
-                boxCollider2D.size = FullHeightColliderMetrics.size;
+                boxCollider2D.offset = _fullHeightColliderMetrics.position;
+                boxCollider2D.size = _fullHeightColliderMetrics.size;
             }
+
             animator.SetBool(IsCrouchingAnimatorKey, canCrouch);
         }
     }
 
-    private void CheckIfJumping()
+    void CheckIfJumping ()
     {
         float vertical = Input.GetAxis("Vertical");
         if (vertical > 0)
         {
             animator.SetBool(IsCrouchingAnimatorKey, false);
-            Vector2 force = new Vector2(0, jumpForce );
+            Vector2 force = new Vector2(0, jumpForce);
             rigidbody2D.AddForce(force);
             animator.SetTrigger(JumpAnimatorKey);
         }
@@ -98,4 +88,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void PickupKey ()
+    {
+        Debug.Log("Player picked the key");
+        scoreController.IncreaseScore(10);
+    }
 }

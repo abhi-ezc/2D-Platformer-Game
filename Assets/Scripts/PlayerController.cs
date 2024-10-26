@@ -2,11 +2,6 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    // Animator Parameter Keys
-    static readonly int VelocityAnimatorKey = Animator.StringToHash("Velocity");
-    static readonly int IsCrouchingAnimatorKey = Animator.StringToHash("IsCrouching");
-    static readonly int JumpAnimatorKey = Animator.StringToHash("Jump");
-
     // Instance Assignments
     public Animator animator;
     public SpriteRenderer spriteRenderer;
@@ -15,25 +10,37 @@ public class PlayerController : MonoBehaviour
     public ScoreController scoreController;
     public float speed;
     public float jumpForce;
-    readonly Rect _crouchedHeightColliderMetrics = new Rect(new Vector2(-0.13f, 0.6f), new Vector2(0.9f, 1.31f));
+
+    // Animator Parameter Keys
+    readonly int VelocityAnimatorKey = Animator.StringToHash("Velocity");
+    readonly int IsCrouchingAnimatorKey = Animator.StringToHash("IsCrouching");
+    readonly int JumpAnimatorKey = Animator.StringToHash("Jump");
+    readonly int DeathAnimatorKey = Animator.StringToHash("Death");
 
     // Box Collider Sizes and Offset
+    readonly Rect _crouchedHeightColliderMetrics = new Rect(new Vector2(-0.13f, 0.6f), new Vector2(0.9f, 1.31f));
     readonly Rect _fullHeightColliderMetrics = new Rect(new Vector2(0f, 1f), new Vector2(0.5f, 2f));
 
-    void Awake ()
+    // Others
+    bool isDead;
+
+    void Awake()
     {
         rigidbody2D = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
-    void Update ()
+    void Update()
     {
-        MoveCharacter();
-        CheckCanCrouch();
-        CheckIfJumping();
+        if (!isDead)
+        {
+            MoveCharacter();
+            CheckCanCrouch();
+            CheckIfJumping();
+        }
     }
 
-    void MoveCharacter ()
+    void MoveCharacter()
     {
         float horizontal = Input.GetAxis("Horizontal");
         Vector3 pos = transform.position;
@@ -43,7 +50,7 @@ public class PlayerController : MonoBehaviour
         PlayHorizontalMovementAnimation(horizontal);
     }
 
-    void PlayHorizontalMovementAnimation (float horizontal)
+    void PlayHorizontalMovementAnimation(float horizontal)
     {
         animator.SetFloat(VelocityAnimatorKey, Mathf.Abs(horizontal));
         if (horizontal < 0)
@@ -51,7 +58,7 @@ public class PlayerController : MonoBehaviour
         else if (horizontal > 0) spriteRenderer.flipX = false;
     }
 
-    void CheckCanCrouch ()
+    void CheckCanCrouch()
     {
         bool canCrouch = !animator.GetBool(IsCrouchingAnimatorKey);
 
@@ -72,7 +79,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void CheckIfJumping ()
+    void CheckIfJumping()
     {
         float vertical = Input.GetAxis("Vertical");
         if (vertical > 0)
@@ -88,9 +95,15 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void PickupKey ()
+    public void PickupKey()
     {
         Debug.Log("Player picked the key");
         scoreController.IncreaseScore(10);
+    }
+    public void KillPlayer()
+    {
+        isDead = true;
+        animator.SetTrigger(DeathAnimatorKey);
+        GameManager.instance.OnGameOver();
     }
 }

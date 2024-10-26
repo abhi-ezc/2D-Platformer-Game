@@ -1,31 +1,15 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class FallDeath : MonoBehaviour
 {
     public Vector3 SpawnPosition;
 
-    public GameObject GameOverUI;
-    // Start is called before the first frame update
-    void Start()
+    void OnTriggerEnter2D (Collider2D col)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    private void OnTriggerEnter2D(Collider2D col)
-    {
-        if (col.gameObject.GetComponent<PlayerController>() != null)
+        PlayerController playerController = col.gameObject.GetComponent<PlayerController>();
+        if (playerController != null)
         {
-            Destroy(col.gameObject);
-            GameOverUI.SetActive(true);
+            playerController.KillPlayer();
         }
     }
 }

@@ -15,6 +15,7 @@ public class EnemyController : MonoBehaviour
     public Vector2 leftMostPatrolEndPoint;
     public Vector2 rightMostPatrolEndPoint;
     public Animator animator;
+    public PatrolDirection spawnPatrolDirection = PatrolDirection.Right;
 
     // animator keys
     readonly int speedAnimatorKey = Animator.StringToHash("Speed");
@@ -31,6 +32,7 @@ public class EnemyController : MonoBehaviour
 
     void Awake ()
     {
+        nextPatrolDirection = spawnPatrolDirection;
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
         rigidBody2D = gameObject.GetComponent<Rigidbody2D>();
     }

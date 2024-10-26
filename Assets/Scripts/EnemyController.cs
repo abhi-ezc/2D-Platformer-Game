@@ -44,7 +44,7 @@ public class EnemyController : MonoBehaviour
         PlayerController playerController = col.gameObject.GetComponent<PlayerController>();
         if (playerController != null)
         {
-            playerController.KillPlayer();
+            playerController.OnHit();
         }
     }
 

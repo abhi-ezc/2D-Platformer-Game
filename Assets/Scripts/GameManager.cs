@@ -1,20 +1,22 @@
-﻿using UnityEngine;
+﻿using Levels;
+using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager instance;
     public GameObject gameOverUI;
     public GameObject levelCompletedUI;
     public GameObject HUD;
+    public static GameManager Instance { get; private set; }
     public void Awake ()
     {
-        instance = this;
+        Instance = this;
     }
 
     public void OnLevelComplete ()
     {
         HUD.SetActive(false);
         levelCompletedUI.SetActive(true);
+        LevelManager.Instance.OnLevelComplete();
     }
 
     public void OnGameOver ()

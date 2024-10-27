@@ -16,7 +16,6 @@ public class StartMenuController : MonoBehaviour
 
     void PlayGame ()
     {
-        // SceneManager.LoadScene(1);
         levelSelectionUI.SetActive(true);
     }
 

@@ -121,6 +121,6 @@ public class PlayerController : MonoBehaviour
     {
         isDead = true;
         animator.SetTrigger(DeathAnimatorKey);
-        GameManager.instance.OnGameOver();
+        GameManager.Instance.OnGameOver();
     }
 }

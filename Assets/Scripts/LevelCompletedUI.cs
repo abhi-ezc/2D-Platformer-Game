@@ -1,25 +1,25 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using Levels;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class LevelCompletedUI : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+
+    public Button nextLevelButton;
+    public Button quitButton;
+
+    public void Start ()
     {
-        
+        nextLevelButton.onClick.AddListener(onNextLevel);
+        quitButton.onClick.AddListener(OnQuit);
+    }
+    void onNextLevel ()
+    {
+        LevelManager.Instance.LoadNextLevel();
     }
 
-    // Update is called once per frame
-    void Update()
+    void OnQuit ()
     {
-        
-    }
-
-    public void OnLevelCompleted()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        LevelManager.Instance.LoadLevel(0);
     }
 }

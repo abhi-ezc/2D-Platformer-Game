@@ -7,4 +7,11 @@ namespace Levels
         public const int Level3 = 3;
         public const int Level4 = 4;
     }
+
+    public enum LevelStatus
+    {
+        Locked = 0,
+        Unlocked,
+        Completed,
+    }
 }

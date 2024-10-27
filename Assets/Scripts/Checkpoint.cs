@@ -23,7 +23,7 @@ public class Checkpoint : MonoBehaviour
         {
             if (isLastCheckpoint)
             {
-                GameManager.instance.OnLevelComplete();
+                GameManager.Instance.OnLevelComplete();
             }
         }
     }

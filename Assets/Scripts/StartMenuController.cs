@@ -1,12 +1,12 @@
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class StartMenuController : MonoBehaviour
 {
     public Button playButton;
     public Button quitButton;
+    public GameObject levelSelectionUI;
 
     void Awake ()
     {
@@ -16,7 +16,8 @@ public class StartMenuController : MonoBehaviour
 
     void PlayGame ()
     {
-        SceneManager.LoadScene(1);
+        // SceneManager.LoadScene(1);
+        levelSelectionUI.SetActive(true);
     }
 
     void QuitGame ()

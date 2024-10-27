@@ -1,4 +1,7 @@
+using System;
+using Sounds;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class PlayerController : MonoBehaviour
 {
@@ -25,6 +28,12 @@ public class PlayerController : MonoBehaviour
 
     // Others
     bool isDead;
+
+    // footsteps
+    public float minTimeBetweenFootsteps = 0.3f;
+    public float maxTimeBetweenFootsteps = 0.6f;
+    private float timeSinceLastFootstep;
+
 
     void Awake ()
     {
@@ -55,6 +64,19 @@ public class PlayerController : MonoBehaviour
         transform.position = pos;
 
         PlayHorizontalMovementAnimation(horizontal);
+        PlayFootSound(horizontal);
+    }
+
+    void PlayFootSound (float horizontal)
+    {
+        if (Math.Abs(horizontal) > 0.25)
+        {
+            if (Time.time - timeSinceLastFootstep >= Random.Range(minTimeBetweenFootsteps, maxTimeBetweenFootsteps))
+            {
+                SoundManager.Instance.Play(ESound.PlayerMove);
+                timeSinceLastFootstep = Time.time;
+            }
+        }
     }
 
     void PlayHorizontalMovementAnimation (float horizontal)
@@ -119,8 +141,10 @@ public class PlayerController : MonoBehaviour
     }
     public void KillPlayer ()
     {
+        SoundManager.Instance.Play(ESound.PlayerDeath);
         isDead = true;
         animator.SetTrigger(DeathAnimatorKey);
         GameManager.Instance.OnGameOver();
+        Destroy(this);
     }
 }

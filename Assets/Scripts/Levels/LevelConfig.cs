@@ -6,6 +6,7 @@ namespace Levels
         public const int Level2 = 2;
         public const int Level3 = 3;
         public const int Level4 = 4;
+        public const int Level5 = 5;
     }
 
     public enum LevelStatus

@@ -1,3 +1,4 @@
+using Sounds;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -47,7 +48,6 @@ namespace Levels
         {
             int currentLevelBuildIndex = SceneManager.GetActiveScene().buildIndex;
             SetLevelStatus(currentLevelBuildIndex, LevelStatus.Completed);
-            Debug.Log(IsValidLevel(currentLevelBuildIndex + 1));
 
             if (IsValidLevel(currentLevelBuildIndex + 1)
                 && GetLevelStatus(currentLevelBuildIndex + 1) == LevelStatus.Locked)
@@ -58,32 +58,35 @@ namespace Levels
 
         public void LoadNextLevel ()
         {
-            LoadLevel(SceneManager.GetActiveScene().buildIndex + 1);
+            if (!LoadLevel(SceneManager.GetActiveScene().buildIndex + 1))
+            {
+                // if no more next level
+                // goto Lobby
+                LoadLevel(0);
+            }
         }
 
-        public void LoadLevel (int levelIndex)
+        public bool LoadLevel (int levelIndex)
         {
             if (levelIndex == 0)
             {
                 SceneManager.LoadScene(levelIndex);
+                return true;
             }
-            else if (IsValidLevel(levelIndex))
+            if (IsValidLevel(levelIndex))
             {
                 if (GetLevelStatus(levelIndex) != LevelStatus.Locked)
                 {
+                    SoundManager.Instance.Play(ESound.ButtonClick);
                     Debug.Log($"Opening Scene level{levelIndex}");
                     Debug.Log($" Current Status : {GetLevelStatus(levelIndex)}");
                     SceneManager.LoadScene(levelIndex);
+                    return true;
                 }
-                else
-                {
-                    Debug.Log($"Level{levelIndex} is Locked");
-                }
+                Debug.Log($"Level{levelIndex} is Locked");
+                return false;
             }
-            else
-            {
-                Debug.Log("Invalid level");
-            }
+            return false;
 
         }
 

@@ -27,7 +27,6 @@ namespace Levels
 
         void SetFirstLevelStatus ()
         {
-            PlayerPrefs.DeleteAll(); //test
             if (GetLevelStatus(1) == LevelStatus.Locked)
             {
                 SetLevelStatus(1, LevelStatus.Unlocked);

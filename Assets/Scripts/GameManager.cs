@@ -1,4 +1,5 @@
 ﻿using Levels;
+using Sounds;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -16,6 +17,7 @@ public class GameManager : MonoBehaviour
     {
         HUD.SetActive(false);
         levelCompletedUI.SetActive(true);
+        SoundManager.Instance.Play(ESound.Victory);
         LevelManager.Instance.OnLevelComplete();
     }
 

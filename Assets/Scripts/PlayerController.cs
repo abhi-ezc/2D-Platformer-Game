@@ -9,11 +9,11 @@ public class PlayerController : MonoBehaviour
     public Animator animator;
     public SpriteRenderer spriteRenderer;
     public BoxCollider2D boxCollider2D;
-    public Rigidbody2D rigidbody2D;
+    public Rigidbody2D rgdb2D;
     public ScoreController scoreController;
     public LifeUIController lifeUIController;
     public float speed;
-    public float jumpForce;
+    public float jumpForce = 6;
     public int playerLives = 3;
 
     // Box Collider Sizes and Offset
@@ -27,18 +27,12 @@ public class PlayerController : MonoBehaviour
     readonly int VelocityAnimatorKey = Animator.StringToHash("Velocity");
 
     // Others
-    bool isDead;
+    bool isDead = false;
 
     // footsteps
     public float minTimeBetweenFootsteps = 0.3f;
     public float maxTimeBetweenFootsteps = 0.6f;
     private float timeSinceLastFootstep;
-
-
-    void Awake ()
-    {
-        rigidbody2D = GetComponent<Rigidbody2D>();
-    }
 
     void Start ()
     {
@@ -52,24 +46,37 @@ public class PlayerController : MonoBehaviour
         {
             MoveCharacter();
             CheckCanCrouch();
-            CheckIfJumping();
+            CheckCanJump();
         }
     }
 
     void MoveCharacter ()
     {
         float horizontal = Input.GetAxis("Horizontal");
-        Vector3 pos = transform.position;
-        pos.x += horizontal * Time.deltaTime * speed;
-        transform.position = pos;
+        if (CanMove(horizontal))
+        {
+            Vector3 pos = transform.position;
+            pos.x += horizontal * Time.deltaTime * speed;
+            transform.position = pos;
 
-        PlayHorizontalMovementAnimation(horizontal);
-        PlayFootSound(horizontal);
+            PlayHorizontalMovementAnimation(horizontal);
+            PlayFootSound(horizontal);
+        }
+        else
+        {
+            PlayHorizontalMovementAnimation(0);
+        }
+
+    }
+
+    private bool CanMove (float horizontal)
+    {
+        return !isDead;
     }
 
     void PlayFootSound (float horizontal)
     {
-        if (Math.Abs(horizontal) > 0.25)
+        if (Math.Abs(horizontal) > 0.25 && rgdb2D.velocity.y == 0)
         {
             if (Time.time - timeSinceLastFootstep >= Random.Range(minTimeBetweenFootsteps, maxTimeBetweenFootsteps))
             {
@@ -108,14 +115,13 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void CheckIfJumping ()
+    void CheckCanJump ()
     {
-        float vertical = Input.GetAxis("Vertical");
-        if (vertical > 0)
+        float vertical = Input.GetAxis("Jump");
+        if (vertical > 0 && rgdb2D.velocity.y == 0)
         {
             animator.SetBool(IsCrouchingAnimatorKey, false);
-            Vector2 force = new Vector2(0, jumpForce);
-            rigidbody2D.AddForce(force);
+            rgdb2D.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
             animator.SetTrigger(JumpAnimatorKey);
         }
         else

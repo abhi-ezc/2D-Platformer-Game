@@ -16,6 +16,7 @@ namespace Sounds
         PlayerMove,
         PlayerDeath,
         EnemyDeath,
-        Music
+        Music,
+        Victory
     }
 }
